@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/resultboxLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#af000000" >
+
+    <TextView
+        android:id="@+id/target_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Hong Kong"
+        android:gravity="bottom"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="8dp"
+        android:textColor="#ffffffff" />
+
+    <TextView
+        android:id="@+id/target_LngLat"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Lng; Lat"
+        android:gravity="bottom"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="8dp"
+        android:textColor="#ffffffff"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="5dp"
+        android:paddingTop="10dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="(drag marker on screen)"
+        android:gravity="bottom"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp"
+        android:textColor="#ffffffff" />
+
+</LinearLayout>

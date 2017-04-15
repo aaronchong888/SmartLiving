@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_map"
+        icon="@drawable/ic_bar_map"
+        title="Map" />
+    <tab
+        id="@+id/tab_route"
+        icon="@drawable/ic_bar_route"
+        title="Direction" />
+    <tab
+        id="@+id/tab_health"
+        icon="@drawable/ic_bar_health"
+        title="Health" />
+    <tab
+        id="@+id/tab_profile"
+        icon="@drawable/ic_bar_profile"
+        title="Profile" />
+</tabs>

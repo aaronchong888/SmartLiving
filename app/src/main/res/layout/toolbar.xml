@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbarLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:weightSum="10"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+    <Button
+        android:id="@+id/drawer_button"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="0.9"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="9dp"
+        android:visibility="gone"
+        android:background="@drawable/drawer_btn"
+    />
+
+            <RelativeLayout android:id="@+id/relativeLayout1"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="9.3">
+
+                <hk.hku.eee.testmap.DelayAutoCompleteTextView
+                    android:id="@+id/routeSrc"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    android:maxLines="1"
+                    android:layout_marginLeft="2dp"
+                    android:paddingLeft="10dp"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="textCapSentences|textNoSuggestions"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:background="@android:color/white"
+                    android:hint="Search Location"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:dropDownWidth="320dp"
+                    android:dropDownVerticalOffset="3dp"
+                    />
+
+                <Button
+                    android:id="@+id/clearSrc_btn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="13dp"
+                    android:layout_alignRight="@+id/routeSrc"
+                    android:background="@drawable/clear_btn"
+                    android:visibility="invisible"
+                    />
+            </RelativeLayout>
+
+    <Button
+        android:id="@+id/search_button"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="0.9"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignBaseline="@+id/geo_autocomplete"
+        android:layout_alignBottom="@+id/geo_autocomplete"
+        android:layout_alignRight="@+id/geo_autocomplete"
+        android:background="@drawable/ic_search"
+     />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/routeBox"
+        android:visibility="invisible">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+            <Button
+                android:id="@+id/dummy_button"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="0.9"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/ic_reverse"
+                android:visibility="gone"
+                />
+
+            <RelativeLayout android:id="@+id/relativeLayout2"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="9.3">
+
+                <hk.hku.eee.testmap.DelayAutoCompleteTextView
+                    android:id="@+id/routeDest"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="0dp"
+                    android:maxLines="1"
+                    android:layout_marginLeft="2dp"
+                    android:paddingLeft="10dp"
+                    android:imeOptions="flagNoExtractUi|actionDone"
+                    android:inputType="textCapSentences|textNoSuggestions"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:background="@android:color/white"
+                    android:hint="To.."
+                    android:textColorHint="@android:color/darker_gray"
+                    android:dropDownWidth="320dp"
+                    android:dropDownVerticalOffset="3dp"
+                    />
+
+                <Button
+                    android:id="@+id/clearDest_btn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_alignRight="@+id/routeDest"
+                    android:background="@drawable/clear_btn"
+                    android:visibility="invisible"
+                    />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/reverse_btn"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="0.9"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_alignBaseline="@+id/relativeLayout2"
+                android:layout_alignBottom="@+id/relativeLayout2"
+                android:layout_alignRight="@+id/relativeLayout2"
+                android:background="@drawable/ic_reverse"
+                />
+
+        </LinearLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</LinearLayout>

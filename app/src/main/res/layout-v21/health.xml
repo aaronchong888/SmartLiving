@@ -1,0 +1,473 @@
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="5dp">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/icon"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/ic_face"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginRight="13dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            />
+
+                        <TextView
+                            android:id="@+id/aqhi_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:gravity="center_vertical"
+                            android:textColor="#000"
+                            android:text="Personal AQHI: \t\t"
+                            android:textStyle="bold"
+                            android:layout_marginTop="5dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@+id/icon"
+                            android:layout_toEndOf="@+id/icon" />
+
+                        <TextView
+                            android:id="@+id/aqhi_text"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:gravity="center_vertical"
+                            android:textColor="#000"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@+id/aqhi_title"
+                            android:layout_toEndOf="@+id/aqhi_title" />
+
+                        <TextView android:id="@+id/er_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:text="Health Risk (%AR) : \t\t"
+                            android:layout_toRightOf="@+id/icon"
+                            android:layout_below="@+id/aqhi_title"/>
+
+                        <TextView android:id="@+id/er_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text=" 0.0"
+                            android:layout_toRightOf="@+id/er_title"
+                            android:layout_below="@+id/aqhi_title"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
+                        <ImageView
+                            android:id="@+id/aqhi_icon"
+                            android:layout_width="150dp"
+                            android:layout_height="80dp"
+                            android:src="@drawable/aqhi_low"
+                            android:layout_marginRight="17dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/advice_text"
+                        android:layout_marginRight="17dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:gravity="center_vertical"
+                        android:textColor="#FF0000"
+                        android:visibility="gone"
+                        android:text="The general public is advised to reduce outdoor physical exertion, and to reduce the time of their stay outdoors, especially in areas with heavy traffic." />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@android:color/darker_gray"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp">
+                    <RelativeLayout
+                    android:id="@+id/hr_view_click"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/hr_icon"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_heartrate"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/hr_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical"
+                        android:textColor="#000"
+                        android:text="Heart Rate"
+                        android:textStyle="bold"
+                        android:layout_marginTop="7dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toRightOf="@+id/hr_icon"
+                        android:layout_toEndOf="@+id/hr_icon" />
+
+                    <TextView android:id="@+id/hr_subTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="N/A"
+                        android:layout_toRightOf="@+id/hr_icon"
+                        android:layout_below="@+id/hr_title" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginRight="13dp"
+                        android:layout_alignParentRight="true" >
+                    <TextView
+                        android:id="@+id/hr_avg_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:gravity="right"
+                        android:textColor="@android:color/darker_gray"
+                        android:layout_marginRight="3dp"
+
+                        android:text="Avg." />
+
+                    <TextView
+                        android:id="@+id/hr_avg_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:gravity="center_horizontal"
+                        android:background="@drawable/profile_circular_border_imageview"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp"
+                        android:textColor="@android:color/white"
+                        android:text="-" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+                    <LinearLayout
+                        android:id="@+id/hr_detail_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    <lecho.lib.hellocharts.view.LineChartView
+                        android:id="@+id/hr_chart"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="280dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center_horizontal"
+                        />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp">
+                            <TextView
+                                android:id="@+id/hr_data_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:gravity="right"
+                                android:textColor="@android:color/darker_gray"
+                                android:layout_marginRight="10dp"
+                                android:text="N/A" />
+
+                            <TextView
+                                android:id="@+id/hr_data_txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="10sp"
+                                android:gravity="center_horizontal"
+                                android:background="@drawable/profile_circular_border_imageview"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:textColor="@android:color/white"
+                                android:text="-" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/darker_gray"/>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <RelativeLayout
+                        android:id="@+id/steps_view_click"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/steps_icon"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/ic_steps"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginRight="13dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            />
+
+                        <TextView
+                            android:id="@+id/steps_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:gravity="center_vertical"
+                            android:textColor="#000"
+                            android:text="Steps"
+                            android:textStyle="bold"
+                            android:layout_marginTop="7dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_toRightOf="@+id/steps_icon"
+                            android:layout_toEndOf="@+id/steps_icon" />
+
+                        <TextView android:id="@+id/steps_subTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:text="N/A"
+                            android:layout_toRightOf="@+id/steps_icon"
+                            android:layout_below="@+id/steps_title" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dp"
+                            android:layout_marginRight="13dp"
+                            android:layout_alignParentRight="true" >
+                            <TextView
+                                android:id="@+id/steps_avg_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="13sp"
+                                android:gravity="right"
+                                android:textColor="@android:color/darker_gray"
+                                android:layout_marginRight="3dp"
+                                android:text="Avg." />
+
+                            <TextView
+                                android:id="@+id/steps_avg_txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="13sp"
+                                android:gravity="center_horizontal"
+                                android:background="@drawable/profile_circular_border_imageview"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:textColor="@android:color/white"
+                                android:text="-" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:id="@+id/steps_detail_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                    <lecho.lib.hellocharts.view.LineChartView
+                        android:id="@+id/steps_chart"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="280dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center_horizontal"/>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp">
+                            <TextView
+                                android:id="@+id/steps_data_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:gravity="right"
+                                android:textColor="@android:color/darker_gray"
+                                android:layout_marginRight="10dp"
+                                android:text="N/A" />
+
+                            <TextView
+                                android:id="@+id/steps_data_txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="10sp"
+                                android:gravity="center_horizontal"
+                                android:background="@drawable/profile_circular_border_imageview"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:textColor="@android:color/white"
+                                android:text="-" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/darker_gray"/>
+                <LinearLayout
+                    android:id="@+id/survey_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_gravity="center_horizontal">
+                    <TextView android:id="@+id/survey_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:textSize="12sp"
+                        android:text="How do you feel about today's air quality?"
+                        android:layout_toRightOf="@+id/icon"
+                        android:layout_below="@+id/aqhi_title"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp">
+                        <ImageView
+                            android:id="@+id/happy_face"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_sentiment_very_satisfied"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            />
+                        <ImageView
+                            android:id="@+id/normal_face"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_sentiment_neutral"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginLeft="30dp"
+                            />
+                        <ImageView
+                            android:id="@+id/unhappy_face"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_sentiment_very_dissatisfied"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginLeft="30dp"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            </ScrollView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="55dp"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/darker_gray"/>
+            <TextView
+                android:id="@+id/refresh_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="left"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginLeft="15dp"
+                android:textSize="11sp"
+                android:text="To update health data, measure with any device and sync with Google Fit app, then press the Refresh button."/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_refresh"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                android:scaleType="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.widget.RelativeLayout>
