@@ -44,4 +44,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:10.0.1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.github.lecho:hellocharts-android:v1.5.8'
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
 }

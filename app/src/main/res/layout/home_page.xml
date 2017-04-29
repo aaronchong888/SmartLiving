@@ -1,0 +1,353 @@
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="2dp">
+                        <RelativeLayout
+                            android:id="@+id/device1_view_click"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <ImageView
+                                android:id="@+id/device1_icon"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_device1"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginRight="13dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="10dp"
+                                />
+
+                            <TextView
+                                android:id="@+id/device1_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:gravity="center_vertical"
+                                android:textColor="#000"
+                                android:text="Bedroom Air Conditioner"
+                                android:textStyle="bold"
+                                android:layout_marginTop="7dp"
+                                android:layout_alignParentTop="true"
+                                android:layout_toRightOf="@+id/device1_icon"
+                                android:layout_toEndOf="@+id/device1_icon" />
+
+                            <TextView android:id="@+id/device1_mode"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:text="[ -- ]"
+                                android:layout_marginRight="5dp"
+                                android:layout_toRightOf="@+id/device1_icon"
+                                android:layout_below="@+id/device1_title" />
+
+                            <TextView android:id="@+id/device1_subTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:text="--"
+                                android:layout_toRightOf="@+id/device1_mode"
+                                android:layout_below="@+id/device1_title" />
+
+                            <TextView android:id="@+id/device1_subTitle_degree"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:text=" °C"
+                                android:layout_toRightOf="@+id/device1_subTitle"
+                                android:layout_below="@+id/device1_title" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:layout_marginRight="10dp"
+                                android:layout_alignParentRight="true" >
+
+                                <Switch
+                                    android:id="@+id/device1_switch"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginTop="0dp" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                        <LinearLayout
+                            android:id="@+id/device1_detail_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="5dp">
+
+                                    <TextView android:id="@+id/temp_title"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="18sp"
+                                        android:layout_marginTop="16dp"
+                                        android:layout_marginLeft="30dp"
+                                        android:layout_marginRight="5dp"
+                                        android:text="Set Temperature: "
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView android:id="@+id/temp_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="36sp"
+                                        android:text="25"
+                                        android:textColor="@color/colorPrimaryDark"
+                                        android:layout_toRightOf="@+id/temp_title"/>
+
+                                    <TextView android:id="@+id/temp_subtext"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_toRightOf="@+id/temp_text"
+                                        android:layout_alignBottom="@+id/temp_text"
+                                        android:textSize="28sp"
+                                        android:textColor="@color/colorPrimaryDark"
+                                        android:layout_marginBottom="2dp"
+                                        android:text="°C" />
+
+                                </RelativeLayout>
+
+                                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                                    android:id="@+id/discrete1"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:dsb_min="10"
+                                    app:dsb_max="30"
+                                    app:dsb_value="25"
+                                    app:dsb_progressColor="@color/colorAccent"
+                                    app:dsb_indicatorColor="@color/colorAccent"
+                                    />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="15dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:layout_marginLeft="25dp"
+                                    android:layout_marginRight="20dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Mode: "
+                                        android:textSize="16sp"
+                                        android:layout_marginRight="15dp"
+                                        android:layout_marginTop="13dp"/>
+
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content">
+                                    <RadioGroup
+                                        android:id="@+id/radio_group"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:checkedButton="@+id/mode_auto"
+                                        android:orientation="horizontal">
+
+                                        <RadioButton
+                                            android:id="@+id/mode_auto"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@null"
+                                            android:layout_marginLeft="2dp"
+                                            android:layout_marginBottom="3dp"
+                                            android:layout_marginRight="20dp"
+                                            android:button="@drawable/mode_auto" />
+
+                                        <RadioButton
+                                            android:id="@+id/mode_cool"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@null"
+                                            android:layout_marginLeft="2dp"
+                                            android:layout_marginBottom="3dp"
+                                            android:layout_marginRight="20dp"
+                                            android:button="@drawable/mode_cool" />
+
+                                        <RadioButton
+                                            android:id="@+id/mode_dry"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@null"
+                                            android:layout_marginLeft="0dp"
+                                            android:layout_marginBottom="3dp"
+                                            android:layout_marginRight="20dp"
+                                            android:button="@drawable/mode_dry" />
+
+                                        <RadioButton
+                                            android:id="@+id/mode_fan"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@null"
+                                            android:layout_marginLeft="0dp"
+                                            android:layout_marginBottom="3dp"
+                                            android:layout_marginRight="20dp"
+                                            android:button="@drawable/mode_fan" />
+
+                                        <RadioButton
+                                            android:id="@+id/mode_heat"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:background="@null"
+                                            android:layout_marginLeft="3dp"
+                                            android:layout_marginBottom="3dp"
+                                            android:layout_marginRight="20dp"
+                                            android:button="@drawable/mode_heat" />
+
+                                    </RadioGroup>
+
+                                        <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="30dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Auto"
+                                            android:layout_marginRight="17dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Cool"
+                                            android:layout_marginRight="19dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Dry"
+                                            android:layout_marginRight="22dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Fan"
+                                            android:layout_marginRight="20dp"/>
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Heat"
+                                            android:layout_marginRight="20dp"/>
+
+                                        </LinearLayout>
+                                    </RelativeLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="15dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_marginLeft="30dp"
+                                    android:layout_marginRight="20dp">
+
+                                    <ToggleButton
+                                        android:layout_height="45dp"
+                                        android:layout_width="80dp"
+                                        android:id="@+id/swing_button"
+                                        android:layout_marginLeft="60dp"
+                                        android:textOn="Swing"
+                                        android:textOff="Swing" />
+
+                                    <ToggleButton
+                                        android:layout_height="45dp"
+                                        android:layout_width="80dp"
+                                        android:layout_marginLeft="30dp"
+                                        android:id="@+id/quiet_button"
+                                        android:textOn="Quiet"
+                                        android:textOff="Quiet" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@android:color/darker_gray"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="55dp"
+                android:layout_alignParentBottom="true"
+                android:background="@android:color/darker_gray"/>
+            <TextView
+                android:id="@+id/refresh_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="left"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginLeft="15dp"
+                android:textSize="11sp"
+                android:text="To add a new smart home device,  press the Add button and follow the device pairing instructions."/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_btn_add"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                android:scaleType="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</android.widget.RelativeLayout>

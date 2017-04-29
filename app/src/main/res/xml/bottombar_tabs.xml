@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_map"
-        icon="@drawable/ic_bar_map"
-        title="Map" />
+        id="@+id/tab_home"
+        icon="@drawable/ic_bar_home"
+        title="Home" />
     <tab
-        id="@+id/tab_route"
-        icon="@drawable/ic_bar_route"
-        title="Direction" />
+        id="@+id/tab_report"
+        icon="@drawable/ic_bar_report"
+        title="Report" />
     <tab
         id="@+id/tab_health"
         icon="@drawable/ic_bar_health"

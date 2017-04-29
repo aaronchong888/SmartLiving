@@ -281,11 +281,12 @@
 
             <TextView
                 android:id="@+id/reg_agree_text"
+                android:layout_marginTop="9dp"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/reg_agree_edit"
                 android:textSize="12sp"
-                android:text="I have read and agree to the Privacy Policy. I have read and agree to the Privacy Policy"/>
+                android:text="I have read and agree to the Privacy Policy."/>
 
         </RelativeLayout>
 

@@ -74,9 +74,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -112,9 +116,13 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
+
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
@@ -125,96 +133,40 @@ import static java.text.DateFormat.getTimeInstance;
 public class MainActivity extends Activity implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LineChartOnValueSelectListener
 {
     private static final int TAG_CODE_PERMISSION_LOCATION = 1340;
-    public static final String TAG_Check = "Check GooglePlay Ver";
-    private static final String advice_reduce = "The general public is advised to reduce outdoor physical exertion, and to reduce the time of their stay outdoors, especially in areas with heavy traffic.";
-    private static final String advice_restrict = "The general public is advised to restrict outdoor physical exertion, and to restrict the time of their stay outdoors, especially in areas with heavy traffic.";
-    private static final String advice_avoid = "The general public is advised to avoid outdoor physical exertion, and to avoid the time of their stay outdoors, especially in areas with heavy traffic.";
+    private static final String TAG_Check = "Check GooglePlay Ver";
+    private static final double CONSTANT_PM25 = 0.0002180567;
+    private static final double CONSTANT_PM10 = 0.0002821751;
+    private static final double CONSTANT_SO2 = 0.0001393235;
+    private static final double CONSTANT_O3 = 0.0005116328;
+    private static final double CONSTANT_NO2 = 0.0004462559;
     private static final int MaxRow = 44 + 1;
     private static final int MaxCol = 60 + 1;
-    public static final int CONSTANT_MTR = 40;
-    public static final int CONSTANT_BUS = 50;
-    public static final int CONSTANT_OTHERS = 50;
-    public static final double CONSTANT_ADDED_RISK = 1.144;
-    public static final double CONSTANT_PM25 = 0.0002180567;
-    public static final double CONSTANT_PM10 = 0.0002821751;
-    public static final double CONSTANT_SO2 = 0.0001393235;
-    public static final double CONSTANT_O3 = 0.0005116328;
-    public static final double CONSTANT_NO2 = 0.0004462559;
+    private boolean completed = false;
+    private boolean has_location = false;
 
-    public Double[][] array1 = new Double[MaxRow][MaxCol];
-    public Double[][] array2 = new Double[MaxRow][MaxCol];
-    public Double[][] array3 = new Double[MaxRow][MaxCol];
-    public Double[][] array4 = new Double[MaxRow][MaxCol];
-    public Double[][] array5 = new Double[MaxRow][MaxCol];
-    public boolean completed = false;
-    public boolean map_ready = false;
-    public boolean has_location = false;
-    public List<PolygonOptions> polygonOpts = new ArrayList<>();
-    public Polygon[] polygons = new Polygon[(MaxRow-1)*(MaxCol-1)];
-    public Polyline[] routes = new Polyline[MaxRow];
-    public List<PolylineOptions> routesOpts = new ArrayList<>();
-    public int[] routes_color = new int[MaxRow];
-    public int[] routes_AQI = new int[MaxRow];
-    public int[] routes_duration = new int[MaxRow];
-    public String[] routes_text = new String[MaxRow];
-    public String[] routes_URL = new String[MaxRow];
-    public String current_route_URL = "";
-
-    // Google Map
-    //private GoogleMap googleMap;
-    //private CustomMapFragment mCustomMapFragment;
     private LatLng current_latlng;
-    private LatLng previousLatLng = new LatLng(0, 0);
-    private Integer prev_row = 0;
-    private Integer prev_col = 0;
     private LocationManager locationManager;
-    private Marker srcMarker;
-    private Marker destMarker;
-
-    private View mMarkerParentView;
-    private ImageView mMarkerImageView;
-
-    private int imageParentWidth = -1;
-    private int imageParentHeight = -1;
-    private int imageHeight = -1;
-    private int centerX = -1;
-    private int centerY = -1;
-
-    //private EditText searchView1;
-    private Button search_button;
-    private Button clear_search_button;
-    private Button drawer_button;
-    private FloatingActionButton direction_button;
-    private FloatingActionButton navigation_button;
-    private String current_destText_value = "";
-    private TextView target_name;
-    private TextView target_LngLat;
-    private TextView result_text;
-    private ProgressBar spinner;
-
     private QuickTask quickTask;
-    //private BackgroundTask bgTask;
-    //private AddPolygonToMap drawTask;
-    //private RouteTask routeTask;
-    private boolean first_QuickTask = false;
-    private boolean backgroundTask_failed = false;
-
-    private Integer THRESHOLD = 2;
-    //private DelayAutoCompleteTextView geo_autocomplete;
 
     private RelativeLayout Relative_Profile;
-    private RelativeLayout Relative_MapView;
+    private RelativeLayout Relative_Home;
     private RelativeLayout Relative_Health;
-    private RelativeLayout routeBox;
-    //private DelayAutoCompleteTextView destText;
-    private Button btnDestClear;
-    private Button btnReverse;
-    private LinearLayout resultbox_incl;
+    private RelativeLayout Relative_Report;
 
     private BottomBar mBottomBar;
-    private @IdRes int prev_tabId = R.id.tab_map;
-    private boolean in_Map_mode = true;
-    private boolean in_Profile_mode = false;
+    private @IdRes int prev_tabId = R.id.tab_home;
+
+    private RelativeLayout Device1ViewClick;
+    private LinearLayout Device1ViewDetail;
+    private DiscreteSeekBar discreteSeekBar1;
+    private FloatingActionButton addBtn;
+    private ToggleButton quiet_button;
+    private ToggleButton swing_button;
+    private RadioGroup radio_group;
+    private TextView device1_degree;
+    private TextView device1_mode;
+    private TextView temp_text;
+    private Switch device1_switch;
 
     private FloatingActionButton refreshBtn;
     private boolean illness = false;
@@ -226,6 +178,7 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     private TextView aqhi_text;
     private TextView er_text;
     private TextView advice_text;
+    private TextView exercise_text;
     private ImageView aqhi_icon;
 
     private CheckBox ill_edit;
@@ -238,7 +191,7 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     private Button clear_profile;
 
     private GoogleApiClient mClient = null;
-    public static final String TAG = "BasicHistoryApi";
+    private static final String TAG = "BasicHistoryApi";
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
     private static boolean authInProgress = false;
@@ -252,7 +205,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     private Boolean history_illness1;
     private Boolean history_illness2;
     private String history_success_date;
-    private String current_using_date;
 
     private FetchStepsAsync stepsTask;
     private LineChartView StepsChart;
@@ -278,11 +230,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     ArrayList<Double> HeartrateArr = new ArrayList<>();
     long[] HeartrateDateArr = new long[7];
 
-    private LinearLayout SurveyView;
-    private ImageView HappyFace;
-    private ImageView NeutralFace;
-    private ImageView UnhappyFace;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -299,7 +246,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ==
                     PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.BODY_SENSORS) ==
                     PackageManager.PERMISSION_GRANTED) {
-                //locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -320,7 +266,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
-            //new LocationControl().execute(this);
 
             registerReceiver(new NetworkChangeReceiver(),
                     new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
@@ -339,7 +284,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             }else {
                 //Registration Dialog
                 showRegistrationDialog(MainActivity.this);
-                //history_success_date = CONSTANT_SUCCESS_DATE;
             }
         }
     }
@@ -348,26 +292,139 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
 
         Log.i("Initialize UI", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-        mMarkerParentView = findViewById(R.id.marker_view_incl);
-        mMarkerImageView = (ImageView) findViewById(R.id.marker_icon_view);
-        resultbox_incl = (LinearLayout) findViewById(R.id.resultbox_incl);
-
-        Relative_MapView = (RelativeLayout) findViewById(R.id.map_view);
+        Relative_Home = (RelativeLayout) findViewById(R.id.home_view);
         Relative_Profile = (RelativeLayout) findViewById(R.id.profile_view);
         Relative_Health = (RelativeLayout) findViewById(R.id.health_view);
-        routeBox = (RelativeLayout) findViewById(R.id.routeBox);
-        //destText = (DelayAutoCompleteTextView) findViewById(R.id.routeDest);
-        btnDestClear = (Button) findViewById(R.id.clearDest_btn);
-        btnReverse = (Button) findViewById(R.id.reverse_btn);
+        Relative_Report = (RelativeLayout) findViewById(R.id.report_view);
 
-        target_name = (TextView) findViewById(R.id.target_name);
-        target_LngLat = (TextView) findViewById(R.id.target_LngLat);
-        result_text = (TextView) findViewById(R.id.result_text);
-        spinner = (ProgressBar) findViewById(R.id.progressBar1);
-        clear_search_button = (Button) findViewById(R.id.clearSrc_btn);
-        search_button = (Button) findViewById(R.id.search_button);
+        Device1ViewClick = (RelativeLayout) findViewById(R.id.device1_view_click);
+        Device1ViewDetail = (LinearLayout) findViewById(R.id.device1_detail_view);
+        Device1ViewClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Device1ViewDetail.getVisibility() == View.GONE && device1_switch.isChecked()){
+                    Device1ViewDetail.setVisibility(View.VISIBLE);
+                } else {
+                    Device1ViewDetail.setVisibility(View.GONE);
+                }
+            }
+        });
 
-        refreshBtn = (FloatingActionButton) findViewById(R.id.fab);
+        discreteSeekBar1 = (DiscreteSeekBar) findViewById(R.id.discrete1);
+        discreteSeekBar1.setTrackColor(0xFF9EFE53);
+        discreteSeekBar1.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
+            @Override
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+                temp_text.setText(String.valueOf(value));
+                if (value < 15) {
+                    seekBar.setTrackColor(0xFF55DEFF);
+                } else if (value < 22){
+                    seekBar.setTrackColor(0xFF54FE94);
+                } else if (value < 26){
+                    seekBar.setTrackColor(0xFF9EFE53);
+                } else if (value < 28){
+                    seekBar.setTrackColor(0xFFFDD252);
+                } else {
+                    seekBar.setTrackColor(0xFFFD525D);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
+                device1_degree.setText(String.valueOf(seekBar.getProgress()));
+                SingleToast.show(MainActivity.this, "Temperature set to "+ String.valueOf(seekBar.getProgress()) + " °C", Toast.LENGTH_SHORT);
+            }
+        });
+
+        radio_group = (RadioGroup) findViewById(R.id.radio_group);
+        radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                View radioButton = radioGroup.findViewById(i);
+                int index = radioGroup.indexOfChild(radioButton);
+                if (index == 0){
+                    device1_mode.setText("[ Auto ]");
+                    SingleToast.show(MainActivity.this, "Changed to Auto Mode.", Toast.LENGTH_SHORT);
+                } else if (index == 1){
+                    device1_mode.setText("[ Cool ]");
+                    SingleToast.show(MainActivity.this, "Changed to Cool Mode.", Toast.LENGTH_SHORT);
+                } else if (index == 2){
+                    device1_mode.setText("[ Dry ]");
+                    SingleToast.show(MainActivity.this, "Changed to Dry Mode.", Toast.LENGTH_SHORT);
+                } else if (index == 3){
+                    device1_mode.setText("[ Fan ]");
+                    SingleToast.show(MainActivity.this, "Changed to Fan Mode.", Toast.LENGTH_SHORT);
+                } else {
+                    device1_mode.setText("[ Heat ]");
+                    SingleToast.show(MainActivity.this, "Changed to Heat Mode.", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+
+        swing_button = (ToggleButton) findViewById(R.id.swing_button);
+        swing_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SingleToast.show(MainActivity.this, "Swing is ON.", Toast.LENGTH_SHORT);
+                }
+                else
+                {
+                    SingleToast.show(MainActivity.this, "Swing is OFF.", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+        quiet_button = (ToggleButton) findViewById(R.id.quiet_button);
+        quiet_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SingleToast.show(MainActivity.this, "Changed to Quiet operation.", Toast.LENGTH_SHORT);
+                }
+                else
+                {
+                    SingleToast.show(MainActivity.this, "Changed to Normal operation.", Toast.LENGTH_SHORT);
+                }
+            }
+        });
+
+        device1_mode = (TextView) findViewById(R.id.device1_mode);
+        temp_text = (TextView) findViewById(R.id.temp_text);
+        device1_degree = (TextView) findViewById(R.id.device1_subTitle);
+        device1_switch = (Switch) findViewById(R.id.device1_switch);
+        device1_switch.setChecked(false);
+        device1_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    Device1ViewDetail.setVisibility(View.VISIBLE);
+                    SingleToast.show(MainActivity.this, "Bedroom Air Conditioner turned ON.", Toast.LENGTH_SHORT);
+                    device1_degree.setText("25");
+                    device1_mode.setText("[ Auto ]");
+                }else{
+                    Device1ViewDetail.setVisibility(View.GONE);
+                    SingleToast.show(MainActivity.this, "Bedroom Air Conditioner turned OFF.", Toast.LENGTH_SHORT);
+                    device1_degree.setText("--");
+                    device1_mode.setText("[ -- ]");
+                }
+            }
+        });
+
+        addBtn = (FloatingActionButton) findViewById(R.id.add_button);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SingleToast.show(MainActivity.this, "New device successfully added.", Toast.LENGTH_SHORT);
+            }
+        });
+
+    refreshBtn = (FloatingActionButton) findViewById(R.id.fab);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,6 +444,7 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
         aqhi_text = (TextView) findViewById(R.id.aqhi_text);
         er_text = (TextView) findViewById(R.id.er_text);
         advice_text = (TextView) findViewById(R.id.advice_text);
+        exercise_text = (TextView) findViewById(R.id.exercise_text);
         aqhi_icon = (ImageView) findViewById(R.id.aqhi_icon);
         ill_edit = (CheckBox) findViewById(R.id.ill_edit);
         ill_edit.setChecked(history_illness1);
@@ -521,171 +579,47 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             }
         });
 
-        SurveyView = (LinearLayout) findViewById(R.id.survey_view);
-        HappyFace = (ImageView) findViewById(R.id.happy_face);
-        NeutralFace = (ImageView) findViewById(R.id.normal_face);
-        UnhappyFace = (ImageView) findViewById(R.id.unhappy_face);
-
-        HappyFace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // POST result
-                String user_email = email_text.getText().toString();
-                String user_year = dob_text.getText().toString().substring(dob_text.length()-4, dob_text.length());
-                String user_steps = null;
-                if (connected_GoogleFit) {
-                    user_steps = String.format("%d", stepsArr.get(6));
-                }
-                String user_perception = "1";
-                String user_hrate = null;
-                if (connected_GoogleFit) {
-                    user_hrate = String.format("%.1f", HeartrateArr.get(6));
-                }
-                String user_disease = (illness?"1":"0");
-                String user_lat =  String.format("%.5f", previousLatLng.latitude);
-                String user_lon = String.format("%.5f", previousLatLng.longitude);
-                SurveyView.setVisibility(View.GONE);
-            }
-        });
-        NeutralFace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // POST result
-                String user_email = email_text.getText().toString();
-                String user_year = dob_text.getText().toString().substring(dob_text.length()-4, dob_text.length());
-                String user_steps = null;
-                if (connected_GoogleFit) {
-                    user_steps = String.format("%d", stepsArr.get(6));
-                }
-                String user_perception = "2";
-                String user_hrate = null;
-                if (connected_GoogleFit) {
-                    user_hrate = String.format("%.1f", HeartrateArr.get(6));
-                }
-                String user_disease = (illness?"1":"0");
-                String user_lat =  String.format("%.5f", previousLatLng.latitude);
-                String user_lon = String.format("%.5f", previousLatLng.longitude);
-                SurveyView.setVisibility(View.GONE);
-            }
-        });
-        UnhappyFace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // POST result
-                String user_email = email_text.getText().toString();
-                String user_year = dob_text.getText().toString().substring(dob_text.length()-4, dob_text.length());
-                String user_steps = null;
-                if (connected_GoogleFit) {
-                    user_steps = String.format("%d", stepsArr.get(6));
-                }
-                String user_perception = "3";
-                String user_hrate = null;
-                if (connected_GoogleFit) {
-                    user_hrate = String.format("%.1f", HeartrateArr.get(6));
-                }
-                String user_disease = (illness?"1":"0");
-                String user_lat =  String.format("%.5f", previousLatLng.latitude);
-                String user_lon = String.format("%.5f", previousLatLng.longitude);
-                SurveyView.setVisibility(View.GONE);
-            }
-        });
-
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
-        navigation_button = (FloatingActionButton) findViewById(R.id.navigation_button);
-        direction_button = (FloatingActionButton) findViewById(R.id.direction_button);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_map) {
-                    //action on Map pressed
+                if (tabId == R.id.tab_home) {
+                    //action on Home pressed
                     if (tabId == prev_tabId){
                         return;
                     }
-                    Calendar c = Calendar.getInstance();
-                    Integer yyyy = c.get(Calendar.YEAR);
-                    user_age = yyyy - Integer.parseInt(dob_text.getText().toString().substring(dob_text.length()-4, dob_text.length()));
-                    prev_tabId = R.id.tab_map;
+                    prev_tabId = R.id.tab_home;
                     if (Relative_Profile.getVisibility() == View.VISIBLE) {
                         Relative_Profile.setVisibility(View.GONE);
                     }
                     if (Relative_Health.getVisibility() == View.VISIBLE) {
                         Relative_Health.setVisibility(View.GONE);
                     }
-                    if (Relative_MapView.getVisibility()!=View.VISIBLE) {
-                        Relative_MapView.setVisibility(View.VISIBLE);
+                    if (Relative_Report.getVisibility() == View.VISIBLE) {
+                        Relative_Report.setVisibility(View.GONE);
                     }
-                    for (int i = 0; i < routes.length; i++) {
-                        if (routes[i] != null) {
-                            routes[i].remove();
-                        }
+                    if (Relative_Home.getVisibility()!=View.VISIBLE) {
+                        Relative_Home.setVisibility(View.VISIBLE);
                     }
-                    if (srcMarker != null) {
-                        srcMarker.remove();
-                    }
-                    if (destMarker != null) {
-                        destMarker.remove();
-                    }
-                    //mCustomMapFragment.setOnDragListener(MainActivity.this);
-                    mMarkerImageView.setVisibility(View.VISIBLE);
-                    target_name.setVisibility(View.VISIBLE);
-                    routeBox.setVisibility(View.INVISIBLE);
-                    resultbox_incl.setVisibility(View.VISIBLE);
-                    if (!in_Map_mode | in_Profile_mode) {
-                        //geo_autocomplete.setText("");
-                        //geo_autocomplete.setHint("Search Location");
-                        result_text.setText("");
-                        //destText.setText("");
-                        previousLatLng = new LatLng(0, 0);
-                        prev_col = -1;
-                        prev_row = -1;
-                        if (has_location) {
-                            updateLocation(current_latlng);
-                            //googleMap.moveCamera(CameraUpdateFactory.newLatLng(current_latlng));
-                            //googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current_latlng, 14));
-                        }
-                    }
-                    in_Map_mode = true;
-                    in_Profile_mode = false;
 
-                } else if (tabId == R.id.tab_route) {
-                    // action on Direction pressed
+                } else if (tabId == R.id.tab_report) {
+                    // action on Report pressed
                     if (tabId == prev_tabId){
                         return;
                     }
-                    if (prev_tabId != R.id.tab_map){
-                        //if (geo_autocomplete.getText().toString().equals("") || geo_autocomplete.getText() == null){
-                        //    geo_autocomplete.setText("Your Location");
-                        //}
-                        Calendar c = Calendar.getInstance();
-                        Integer yyyy = c.get(Calendar.YEAR);
-                        user_age = yyyy - Integer.parseInt(dob_text.getText().toString().substring(dob_text.length()-4, dob_text.length()));
-                    }
-                    prev_tabId = R.id.tab_route;
+                    prev_tabId = R.id.tab_report;
                     if (Relative_Profile.getVisibility() == View.VISIBLE) {
                         Relative_Profile.setVisibility(View.GONE);
                     }
                     if (Relative_Health.getVisibility() == View.VISIBLE) {
                         Relative_Health.setVisibility(View.GONE);
                     }
-                    if (Relative_MapView.getVisibility()!=View.VISIBLE) {
-                        Relative_MapView.setVisibility(View.VISIBLE);
+                    if (Relative_Home.getVisibility() == View.VISIBLE) {
+                        Relative_Home.setVisibility(View.GONE);
                     }
-                    //mCustomMapFragment.setOnDragListener(null); //temp disable onDragListener
-                    mMarkerImageView.setVisibility(View.INVISIBLE);
-                    target_name.setVisibility(View.GONE);
-                    if (in_Map_mode) {
-                        result_text.setText("");
-                        //destText.setText("");
-                        //geo_autocomplete.setText("Your Location");
-                        navigation_button.setVisibility(View.INVISIBLE);
+                    if (Relative_Report.getVisibility()!=View.VISIBLE) {
+                        Relative_Report.setVisibility(View.VISIBLE);
                     }
-                    in_Map_mode = false;
-                    in_Profile_mode = false;
-                    //geo_autocomplete.setHint("From..");
-                    //resultbox_incl.setVisibility(View.INVISIBLE);
-                    routeBox.setVisibility(View.VISIBLE);
-                    direction_button.setVisibility(View.INVISIBLE);
-                    //navigation_button.setVisibility(View.VISIBLE);
 
                 } else if (tabId == R.id.tab_health) {
                     // Action on Health pressed
@@ -693,11 +627,15 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                         return;
                     }
                     prev_tabId = R.id.tab_health;
+                    new LocationControl().execute(MainActivity.this);
                     Calendar c = Calendar.getInstance();
                     Integer yyyy = c.get(Calendar.YEAR);
                     user_age = yyyy - Integer.parseInt(dob_text.getText().toString().substring(dob_text.length()-4, dob_text.length()));
-                    if (Relative_MapView.getVisibility()==View.VISIBLE) {
-                        Relative_MapView.setVisibility(View.GONE);
+                    if (Relative_Home.getVisibility()==View.VISIBLE) {
+                        Relative_Home.setVisibility(View.GONE);
+                    }
+                    if (Relative_Report.getVisibility() == View.VISIBLE) {
+                        Relative_Report.setVisibility(View.GONE);
                     }
                     if (Relative_Profile.getVisibility() == View.VISIBLE) {
                         Relative_Profile.setVisibility(View.GONE);
@@ -705,8 +643,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     if (Relative_Health.getVisibility() != View.VISIBLE) {
                         Relative_Health.setVisibility(View.VISIBLE);
                     }
-                    in_Profile_mode = false;
-                    //Toast.makeText(getApplicationContext(), "selected Item is Health", Toast.LENGTH_SHORT).show();
 
                 } else if (tabId == R.id.tab_profile) {
                     // action on Profile pressed
@@ -714,8 +650,11 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                         return;
                     }
                     prev_tabId = R.id.tab_profile;
-                    if (Relative_MapView.getVisibility()==View.VISIBLE) {
-                        Relative_MapView.setVisibility(View.GONE);
+                    if (Relative_Home.getVisibility()==View.VISIBLE) {
+                        Relative_Home.setVisibility(View.GONE);
+                    }
+                    if (Relative_Report.getVisibility() == View.VISIBLE) {
+                        Relative_Report.setVisibility(View.GONE);
                     }
                     if (Relative_Health.getVisibility() == View.VISIBLE) {
                         Relative_Health.setVisibility(View.GONE);
@@ -723,8 +662,7 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     if (Relative_Profile.getVisibility() != View.VISIBLE) {
                         Relative_Profile.setVisibility(View.VISIBLE);
                     }
-                    in_Profile_mode = true;
-                    //Toast.makeText(getApplicationContext(), "selected Item is Profile", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -873,167 +811,14 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     }
 
     private void updateLocation(LatLng centerLatLng) {
-        if (first_QuickTask && quickTask != null && quickTask.getStatus() != AsyncTask.Status.FINISHED)
+        if (quickTask != null && quickTask.getStatus() != AsyncTask.Status.FINISHED)
             quickTask.cancel(true);
         Integer row = (int) (((22.57 - centerLatLng.latitude) / 0.01) + 1);
         Integer col = (int) (((centerLatLng.longitude - 113.81) / 0.01) + 1);
         if (row > 0 && row < MaxRow && col > 0 && col < MaxCol) {
-            if (prev_row != row || prev_col != col) {
-                prev_row = row;
-                prev_col = col;
-                if (!completed) {
-                        quickTask = new QuickTask();
-                        quickTask.execute(row.toString(), col.toString());
-                } else {
-                    //fetch data from local
-                    if (spinner.getVisibility() == View.VISIBLE){
-                        spinner.setVisibility(View.GONE);
-                    }
-                    String final_result = "";
-                    if (array1[row][col] != null)
-                        final_result += "PM2.5 : \t" + String.format("%.4f", array1[row][col]) + "\n";
-                    if (array2[row][col] != null)
-                        final_result += "PM10 : \t" + String.format("%.4f", array2[row][col]) + "\n";
-                    if (array3[row][col] != null)
-                        final_result += "NO2 : \t\t\t" + String.format("%.4f", array3[row][col]) + "\n";
-                    if (array4[row][col] != null)
-                        final_result += "O3 : \t\t\t\t" + String.format("%.4f", array4[row][col]) + "\n";
-                    if (array5[row][col] != null)
-                        final_result += "SO2 : \t\t\t" + String.format("%.4f", array5[row][col]);
-                    if (array1[row][col] != null && array2[row][col] != null && array3[row][col] != null && array4[row][col] != null && array5[row][col] != null ) {
-                        ER_value = (Math.max(Math.expm1(array1[row][col] * CONSTANT_PM25), Math.expm1(array2[row][col] * CONSTANT_PM10)) + Math.expm1(array3[row][col] * CONSTANT_NO2) + Math.expm1(array4[row][col] * CONSTANT_O3) + Math.expm1(array5[row][col] * CONSTANT_SO2)) * 100;
-                        Log.i("ER_value : ", Double.toString(ER_value));
-                        if (illness) {
-                            ER_value = ER_value * CONSTANT_ADDED_RISK;
-                            Log.i("Illness const: ", Double.toString(CONSTANT_ADDED_RISK));
-                        }
-                        //Log.i("ER_value aft illness: ", Double.toString(ER_value));
-                        Log.i("User Age: ", Integer.toString(user_age));
-                        if (user_age < 5 || user_age > 65) {
-                            ER_value = ER_value * CONSTANT_ADDED_RISK;
-                            Log.i("Age const: ", Double.toString(CONSTANT_ADDED_RISK));
-                        } else if (user_age < 21) {
-                            ER_value = ER_value * (CONSTANT_ADDED_RISK - ((user_age - 5) * 0.144 / 15.0));
-                            Log.i("Age const: ", Double.toString((CONSTANT_ADDED_RISK - ((user_age - 5) * 0.144 / 15.0))));
-                        } else if (user_age > 39) {
-                            ER_value = ER_value * (CONSTANT_ADDED_RISK - ((65 - user_age) * 0.144 / 25.0));
-                            Log.i("Age const: ", Double.toString((CONSTANT_ADDED_RISK - ((65 - user_age) * 0.144 / 25.0))));
-                        }
-                        //Log.i("ER_value aft age: ", Double.toString(ER_value));
-                        if (current_heartrate != 0) {
-                            ER_value = ER_value * (double) current_heartrate / (double) avg_heartrate;
-                            Log.i("HR const: ", Double.toString((double) current_heartrate / (double) avg_heartrate));
-                        }
-                        //Log.i("ER_value aft HR: ", Double.toString(ER_value));
-                        Log.i("Personal ER_value : ", Double.toString(ER_value));
-                        er_text.setText(String.format("%.2f", ER_value));
-                        if (ER_value < 1.88) {
-                            AQHI_value = 1;
-                        } else if (ER_value < 3.76) {
-                            AQHI_value = 2;
-                        } else if (ER_value < 5.64) {
-                            AQHI_value = 3;
-                        } else if (ER_value < 7.52) {
-                            AQHI_value = 4;
-                        } else if (ER_value < 9.41) {
-                            AQHI_value = 5;
-                        } else if (ER_value < 11.29) {
-                            AQHI_value = 6;
-                        } else if (ER_value < 12.91) {
-                            AQHI_value = 7;
-                        } else if (ER_value < 15.07) {
-                            AQHI_value = 8;
-                        } else if (ER_value < 17.22) {
-                            AQHI_value = 9;
-                        } else if (ER_value < 19.37) {
-                            AQHI_value = 10;
-                        } else if (ER_value > 19.37) {
-                            AQHI_value = 11;
-                        } else {
-                            AQHI_value = 0;
-                        }
-                        final_result += "\n\nPersonal AQHI : \t" + Integer.toString(AQHI_value);
-                        if (AQHI_value < 4) {
-                            final_result += "  ( Low )";
-                            advice_text.setText("");
-                            advice_text.setVisibility(View.GONE);
-                            aqhi_icon.setImageResource(R.drawable.aqhi_low);
-                        } else if (AQHI_value < 7) {
-                            final_result += "  ( Moderate )";
-                            advice_text.setText("");
-                            advice_text.setVisibility(View.GONE);
-                            aqhi_icon.setImageResource(R.drawable.aqhi_moderate);
-                        } else if (AQHI_value < 8) {
-                            final_result += "  ( High )";
-                            advice_text.setText(advice_reduce);
-                            advice_text.setVisibility(View.VISIBLE);
-                            aqhi_icon.setImageResource(R.drawable.aqhi_high);
-                        } else if (AQHI_value < 11) {
-                            final_result += "  ( Very High )";
-                            advice_text.setText(advice_restrict);
-                            advice_text.setVisibility(View.VISIBLE);
-                            aqhi_icon.setImageResource(R.drawable.aqhi_very_high);
-                        } else if (AQHI_value < 12) {
-                            final_result += "  ( Serious )";
-                            advice_text.setText(advice_avoid);
-                            advice_text.setVisibility(View.VISIBLE);
-                            aqhi_icon.setImageResource(R.drawable.aqhi_serious);
-                        }
-                        aqhi_text.setText(Integer.toString(AQHI_value));
-                    }
-                    Log.i("Local Data Row : ", row.toString());
-                    Log.i("Local Data Col : ", col.toString());
-                    Log.i("Local Data : ", final_result);
-                    if (routeBox.getVisibility() == View.INVISIBLE) {
-                        result_text.setText(final_result);
-                    }
-                    if (result_text.getVisibility() == View.GONE){
-                        result_text.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        }
-
-        if (centerLatLng != null) {
-            Locale locale = new Locale("en", "HK");
-            Geocoder geocoder = new Geocoder(MainActivity.this, locale);
-
-            List<Address> addresses = new ArrayList<Address>();
-            try {
-                addresses = geocoder.getFromLocation(centerLatLng.latitude, centerLatLng.longitude, 1);
-                target_LngLat.setText("Latitude : " + centerLatLng.latitude + "\nLongitude : " + centerLatLng.longitude);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (addresses != null && addresses.size() > 0) {
-                String addressIndex0 = (addresses.get(0).getAddressLine(0) != null) ? addresses
-                        .get(0).getAddressLine(0) : null;
-                String addressIndex1 = (addresses.get(0).getAddressLine(1) != null) ? addresses
-                        .get(0).getAddressLine(1) : null;
-                String addressIndex2 = (addresses.get(0).getAddressLine(2) != null) ? addresses
-                        .get(0).getAddressLine(2) : null;
-                String addressIndex3 = (addresses.get(0).getAddressLine(3) != null) ? addresses
-                        .get(0).getAddressLine(3) : null;
-                String completeAddress = addressIndex0;
-
-                if (addressIndex1 != null) {
-                    completeAddress += ", " + addressIndex1;
-                }
-                if (addressIndex2 != null) {
-                    completeAddress += ", " + addressIndex2;
-                }
-                if (addressIndex3 != null) {
-                    completeAddress += ", " + addressIndex3;
-                }
-                if (completeAddress != null) {
-                    target_name.setText(completeAddress);
-                    current_destText_value = completeAddress;
-                    if (routeBox.getVisibility() == View.INVISIBLE) {
-                        direction_button.setVisibility(View.VISIBLE);
-                        navigation_button.setVisibility(View.INVISIBLE);
-                    }
-                }
+            if (!completed) {
+                quickTask = new QuickTask();
+                quickTask.execute(row.toString(), col.toString());
             }
         }
     }
@@ -1093,24 +878,13 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     if (temp1 != -1 && temp2 != -1 && temp3 != -1 && temp4 != -1 && temp5 != -1 ) {
                         ER_value = (Math.max(Math.expm1(temp1 * CONSTANT_PM25), Math.expm1(temp2 * CONSTANT_PM10)) + Math.expm1(temp3 * CONSTANT_NO2) + Math.expm1(temp4 * CONSTANT_O3) + Math.expm1(temp5 * CONSTANT_SO2)) * 100;
                         Log.i("ER_value : ", Double.toString(ER_value));
-                        if (illness) {
-                            ER_value = ER_value * CONSTANT_ADDED_RISK;
+                        Calendar c = Calendar.getInstance();
+                        c.add(Calendar.HOUR_OF_DAY, -1);        //suppose no need this line
+                        Integer test_minute = c.get(Calendar.MINUTE);
+                        if (test_minute < 30){                       //suppose this is 2 mins only
+                            c.add(Calendar.HOUR_OF_DAY, -1);
                         }
-                        Log.i("ER_value aft illness: ", Double.toString(ER_value));
-                        if (user_age < 5 || user_age > 65) {
-                            ER_value = ER_value * CONSTANT_ADDED_RISK;
-                        } else if (user_age < 21) {
-                            ER_value = ER_value * (CONSTANT_ADDED_RISK - ((user_age - 5) * (1 - CONSTANT_ADDED_RISK) / 15));
-                        } else if (user_age > 39) {
-                            ER_value = ER_value * (CONSTANT_ADDED_RISK - ((65 - user_age) * (1 - CONSTANT_ADDED_RISK) / 25));
-                        }
-                        Log.i("ER_value aft age: ", Double.toString(ER_value));
-                        if (current_heartrate != 0) {
-                            ER_value = ER_value * (double) current_heartrate / (double) avg_heartrate;
-                        }
-                        Log.i("ER_value aft HR: ", Double.toString(ER_value));
-                        Log.i("Personal ER_value : ", Double.toString(ER_value));
-                        er_text.setText(String.format("%.2f", ER_value));
+                        er_text.setText(dateFormat.format(c.getTime()));
                         if (ER_value < 1.88) {
                             AQHI_value = 1;
                         } else if (ER_value < 3.76) {
@@ -1136,26 +910,31 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                         } else {
                             AQHI_value = 0;
                         }
-                        final_result += "\n\nPersonal AQHI : \t" + Integer.toString(AQHI_value);
+                        final_result += "\n\nAQHI : \t" + Integer.toString(AQHI_value);
                         if (AQHI_value < 4) {
                             final_result += "  ( Low )";
-                            advice_text.setText("");
+                            exercise_text.setVisibility(View.VISIBLE);
+                            advice_text.setVisibility(View.GONE);
                             aqhi_icon.setImageResource(R.drawable.aqhi_low);
                         } else if (AQHI_value < 7) {
                             final_result += "  ( Moderate )";
-                            advice_text.setText("");
+                            exercise_text.setVisibility(View.VISIBLE);
+                            advice_text.setVisibility(View.GONE);
                             aqhi_icon.setImageResource(R.drawable.aqhi_moderate);
                         } else if (AQHI_value < 8) {
                             final_result += "  ( High )";
-                            advice_text.setText(advice_reduce);
+                            exercise_text.setVisibility(View.GONE);
+                            advice_text.setVisibility(View.VISIBLE);
                             aqhi_icon.setImageResource(R.drawable.aqhi_high);
                         } else if (AQHI_value < 11) {
                             final_result += "  ( Very High )";
-                            advice_text.setText(advice_restrict);
+                            exercise_text.setVisibility(View.GONE);
+                            advice_text.setVisibility(View.VISIBLE);
                             aqhi_icon.setImageResource(R.drawable.aqhi_very_high);
                         } else if (AQHI_value < 12) {
                             final_result += "  ( Serious )";
-                            advice_text.setText(advice_avoid);
+                            exercise_text.setVisibility(View.GONE);
+                            advice_text.setVisibility(View.VISIBLE);
                             aqhi_icon.setImageResource(R.drawable.aqhi_serious);
                         }
                         aqhi_text.setText(Integer.toString(AQHI_value));
@@ -1164,16 +943,11 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     Log.e("PostExecute Error : ", "cannot parse malformed JSON");
                 }
             }
-            result_text.setText(final_result);
-            spinner.setVisibility(View.GONE);
-            result_text.setVisibility(View.VISIBLE);
-            first_QuickTask = true;
+            Log.e("Final Result : ", final_result);
         }
 
         @Override
         protected void onPreExecute() {
-            result_text.setVisibility(View.GONE);
-            spinner.setVisibility(View.VISIBLE);
             super.onPreExecute();
         }
 
@@ -1194,9 +968,10 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             if (isCancelled()) return null;
 
             Calendar c = Calendar.getInstance();
-            c.add(Calendar.HOUR_OF_DAY, -1);        //suppose no need this line
+            c.add(Calendar.MONTH, -1);                //this line is added in case the server do not have the latest data
+            c.add(Calendar.HOUR_OF_DAY, -1);        //this line is added in case the server do not have the latest data
             Integer test_minute = c.get(Calendar.MINUTE);
-            if (test_minute < 30){                       //suppose this is 2 mins only
+            if (test_minute < 30){                       //this line is added in case the server do not have the latest data
                 c.add(Calendar.HOUR_OF_DAY, -1);
             }
             Integer yyyy = c.get(Calendar.YEAR);
@@ -1226,9 +1001,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
 
                 String line;
                 while ((line = reader.readLine()) != null && isCancelled() == false) {
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
                     buffer.append(line + "\n");
                 }
 
@@ -1252,6 +1024,42 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                     } catch (final IOException e) {
                         Log.e("PlaceholderFragment", "Error closing stream", e);
                     }
+                }
+            }
+        }
+    }
+
+    public class LocationControl extends AsyncTask<Context, Void, Void>
+    {
+        private final ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+
+        protected void onPreExecute()
+        {
+            this.dialog.setMessage("Determining your location...");
+            this.dialog.setCancelable(false);
+            this.dialog.show();
+        }
+
+        protected Void doInBackground(Context... params)
+        {
+            while (!has_location) {
+                try {
+                    Thread.currentThread();
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        protected void onPostExecute(final Void unused)
+        {
+            if (current_latlng!=null) {
+                Log.i("Location Found", current_latlng.toString());
+                updateLocation(current_latlng);
+                if (this.dialog.isShowing()) {
+                    this.dialog.dismiss();
                 }
             }
         }
@@ -1667,15 +1475,15 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
         submit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (nameText.getText().toString().equals("") || nameText.getText()==null){
-                    Toast.makeText(MainActivity.this, "Please enter a user name.", Toast.LENGTH_SHORT).show();
+                    SingleToast.show(MainActivity.this, "Please enter a user name.", Toast.LENGTH_SHORT);
                     return;
                 }
                 if (emailText.getText().equals("") || emailText.getText()==null || (android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.getText().toString()).matches() == false)){
-                    Toast.makeText(MainActivity.this, "Please enter a valid email.", Toast.LENGTH_SHORT).show();
+                    SingleToast.show(MainActivity.this, "Please enter a valid email.", Toast.LENGTH_SHORT);
                     return;
                 }
                 if (agreeEdit.isChecked() == false){
-                    Toast.makeText(MainActivity.this, "To continue, you must agree to the Privacy Policy.", Toast.LENGTH_SHORT).show();
+                    SingleToast.show(MainActivity.this, "To continue, you must agree to the Privacy Policy.", Toast.LENGTH_SHORT);
                     return;
                 }
                 SharedPreferences.Editor editor = getSharedPreferences(PREF_LOGIN, MODE_PRIVATE).edit();
