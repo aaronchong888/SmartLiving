@@ -1,6 +1,389 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/report_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:gravity="center_vertical"
+                    android:textColor="#000"
+                    android:text="Power Consumption Report"
+                    android:textStyle="bold"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/device1_icon"
+                    android:layout_toEndOf="@+id/device1_icon" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView android:id="@+id/report_number_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="15dp"
+                            android:text="Total Device(s):\t\t\t\t\t\t\t\t"
+                            android:layout_alignParentLeft="true"/>
+
+                        <TextView android:id="@+id/report_number_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:text="1"
+                            android:layout_toRightOf="@+id/report_number_title"
+                            android:layout_alignBottom="@+id/report_number_title"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView android:id="@+id/report_usage_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="7dp"
+                            android:text="Total Usage:\t\t\t\t\t\t\t\t\t\t\t"
+                            android:layout_alignParentLeft="true"/>
+
+                        <TextView android:id="@+id/report_usage_hr_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:text="3"
+                            android:layout_toRightOf="@+id/report_usage_title"
+                            android:layout_alignBottom="@+id/report_usage_title"/>
+
+                        <TextView android:id="@+id/report_usage_hr_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text=" hr "
+                            android:layout_toRightOf="@+id/report_usage_hr_text"
+                            android:layout_alignBottom="@+id/report_usage_hr_text"/>
+
+                        <TextView android:id="@+id/report_usage_min_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:text="15"
+                            android:layout_toRightOf="@+id/report_usage_hr_unit"
+                            android:layout_alignBottom="@+id/report_usage_hr_unit"/>
+
+                        <TextView android:id="@+id/report_usage_min_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text=" mins"
+                            android:layout_toRightOf="@+id/report_usage_min_text"
+                            android:layout_alignBottom="@+id/report_usage_min_text"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView android:id="@+id/report_power_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="Power Consumption:\t\t\t"
+                            android:layout_alignParentLeft="true"/>
+
+                        <TextView android:id="@+id/report_power_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:text="0.61"
+                            android:layout_toRightOf="@+id/report_power_title" />
+
+                        <TextView android:id="@+id/report_power_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text=" kWh"
+                            android:layout_toRightOf="@+id/report_power_text"
+                            android:layout_alignBottom="@+id/report_power_text"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/chart_title"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:textColor="#000"
+                        android:text="Power Usage in Past 12 Months"
+                        android:layout_gravity="center_horizontal" />
+
+                    <lecho.lib.hellocharts.view.ColumnChartView
+                        android:id="@+id/report_chart"
+                        android:layout_marginRight="13dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="280dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center_horizontal"
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+                            <TextView
+                                android:id="@+id/power_data_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:gravity="right"
+                                android:textColor="@android:color/darker_gray"
+                                android:layout_marginRight="5dp"
+                                android:text="N/A" />
+
+                            <TextView
+                                android:id="@+id/power_data_txt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="10sp"
+                                android:gravity="center_horizontal"
+                                android:background="@drawable/profile_circular_border_imageview"
+                                android:paddingRight="10dp"
+                                android:paddingLeft="10dp"
+                                android:textColor="@android:color/white"
+                                android:text="-" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="0dp"
+                android:background="@android:color/darker_gray"/>
+
+            <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="2dp">
+                        <RelativeLayout
+                            android:id="@+id/report_view_click"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp">
+                            <ImageView
+                                android:id="@+id/device1_icon"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_device1"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginRight="13dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="10dp"
+                                />
+
+                            <TextView
+                                android:id="@+id/device1_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                android:gravity="center_vertical"
+                                android:textColor="#000"
+                                android:text="Bedroom Air Conditioner"
+                                android:textStyle="bold"
+                                android:layout_marginTop="14dp"
+                                android:layout_alignParentTop="true"
+                                android:layout_toRightOf="@+id/device1_icon"
+                                android:layout_toEndOf="@+id/device1_icon" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="7dp"
+                                android:layout_marginRight="13dp"
+                                android:layout_alignParentRight="true" >
+
+                                <TextView
+                                    android:id="@+id/device1_percentage_txt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="13sp"
+                                    android:gravity="center_horizontal"
+                                    android:background="@drawable/profile_circular_border_imageview"
+                                    android:paddingRight="10dp"
+                                    android:paddingLeft="12dp"
+                                    android:layout_marginTop="4dp"
+                                    android:textColor="@android:color/white"
+                                    android:text="100%" />
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                        <LinearLayout
+                            android:id="@+id/report_detail_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <TextView android:id="@+id/device1_usage_title"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="13sp"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Total Usage:\t\t\t\t\t\t\t\t\t\t\t"
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView android:id="@+id/device1_usage_hr_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="16sp"
+                                        android:text="3"
+                                        android:layout_toRightOf="@+id/device1_usage_title"
+                                        android:layout_alignBottom="@+id/device1_usage_title"/>
+
+                                    <TextView android:id="@+id/device1_usage_hr_unit"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="14sp"
+                                        android:text=" hr "
+                                        android:layout_toRightOf="@+id/device1_usage_hr_text"
+                                        android:layout_alignBottom="@+id/device1_usage_hr_text"/>
+
+                                    <TextView android:id="@+id/device1_usage_min_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="16sp"
+                                        android:text="15"
+                                        android:layout_toRightOf="@+id/device1_usage_hr_unit"
+                                        android:layout_alignBottom="@+id/device1_usage_hr_unit"/>
+
+                                    <TextView android:id="@+id/device1_usage_min_unit"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="14sp"
+                                        android:text=" mins"
+                                        android:layout_toRightOf="@+id/device1_usage_min_text"
+                                        android:layout_alignBottom="@+id/device1_usage_min_text"/>
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginBottom="10dp">
+
+                                    <TextView android:id="@+id/device1_power_title"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="13sp"
+                                        android:layout_marginLeft="15dp"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_marginTop="2dp"
+                                        android:text="Power Consumption:\t\t\t"
+                                        android:layout_alignParentLeft="true"/>
+
+                                    <TextView android:id="@+id/device1_power_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="16sp"
+                                        android:text="0.61"
+                                        android:layout_toRightOf="@+id/device1_power_title" />
+
+                                    <TextView android:id="@+id/device1_power_unit"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="14sp"
+                                        android:text=" kWh"
+                                        android:layout_toRightOf="@+id/device1_power_text"
+                                        android:layout_alignBottom="@+id/device1_power_text"/>
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:background="@android:color/darker_gray"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.widget.RelativeLayout>

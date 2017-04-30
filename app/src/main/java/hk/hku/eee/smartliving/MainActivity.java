@@ -45,6 +45,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -74,6 +75,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -123,10 +125,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.util.ChartUtils;
+import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.LineChartView;
 import static java.text.DateFormat.getTimeInstance;
 
@@ -190,6 +199,19 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     private TextView email_text;
     private Button clear_profile;
 
+    private RelativeLayout ReportViewClick;
+    private LinearLayout ReportViewDetail;
+    private Handler handler = new Handler();
+    private TextView device1_usage_hr_text;
+    private TextView device1_usage_min_text;
+    private TextView report_usage_hr_text;
+    private TextView report_usage_min_text;
+    private TextView report_power_text;
+    private TextView device1_power_text;
+    private ColumnChartView PowerChart;
+    private TextView power_data_title;
+    private TextView power_data_txt;
+
     private GoogleApiClient mClient = null;
     private static final String TAG = "BasicHistoryApi";
     private static final int REQUEST_OAUTH = 1;
@@ -205,6 +227,14 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     private Boolean history_illness1;
     private Boolean history_illness2;
     private String history_success_date;
+    private Boolean history_device1_state;
+    private String history_device1_mode;
+    private Integer history_device1_temp;
+    private Boolean history_device1_swing;
+    private Boolean history_device1_quiet;
+    private Integer history_usage_hr;
+    private Integer history_usage_min;
+    private Float history_power;
 
     private FetchStepsAsync stepsTask;
     private LineChartView StepsChart;
@@ -279,11 +309,29 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                 history_illness1 = preferences.getBoolean("illness1", false);
                 history_illness2 = preferences.getBoolean("illness2", false);
                 history_success_date = preferences.getString("success_date", "");
+                //device status
+                history_device1_state = preferences.getBoolean("device1_state", false);
+                history_device1_mode = preferences.getString("device1_mode", "");
+                history_device1_temp = preferences.getInt("device1_temp", 25);
+                history_device1_swing = preferences.getBoolean("device1_swing", false);
+                history_device1_quiet = preferences.getBoolean("device1_quiet", false);
+                //report
+                history_usage_hr = preferences.getInt("usage_hr", 0);
+                history_usage_min = preferences.getInt("usage_min", 0);
+                history_power = preferences.getFloat("power", 0.0f);
                 // InitializeUI
                 initializeUI();
             }else {
                 //Registration Dialog
                 showRegistrationDialog(MainActivity.this);
+                history_device1_state = false;
+                history_device1_mode = "[ Auto ]";
+                history_device1_temp = 25;
+                history_device1_swing = false;
+                history_device1_quiet = false;
+                history_usage_hr = 0;
+                history_usage_min = 0;
+                history_power = 0.0f;
             }
         }
     }
@@ -299,6 +347,58 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
 
         Device1ViewClick = (RelativeLayout) findViewById(R.id.device1_view_click);
         Device1ViewDetail = (LinearLayout) findViewById(R.id.device1_detail_view);
+        discreteSeekBar1 = (DiscreteSeekBar) findViewById(R.id.discrete1);
+        radio_group = (RadioGroup) findViewById(R.id.radio_group);
+        swing_button = (ToggleButton) findViewById(R.id.swing_button);
+        quiet_button = (ToggleButton) findViewById(R.id.quiet_button);
+        device1_mode = (TextView) findViewById(R.id.device1_mode);
+        temp_text = (TextView) findViewById(R.id.temp_text);
+        device1_degree = (TextView) findViewById(R.id.device1_subTitle);
+        device1_switch = (Switch) findViewById(R.id.device1_switch);
+        addBtn = (FloatingActionButton) findViewById(R.id.add_button);
+
+        //restore History states
+        if (history_device1_mode.equals("[ Cool ]")) {
+            radio_group.check(radio_group.getChildAt(1).getId());
+        } else if (history_device1_mode.equals("[ Dry ]")) {
+            radio_group.check(radio_group.getChildAt(2).getId());
+        } else if (history_device1_mode.equals("[ Fan ]")) {
+            radio_group.check(radio_group.getChildAt(3).getId());
+        } else if (history_device1_mode.equals("[ Heat ]")) {
+            radio_group.check(radio_group.getChildAt(4).getId());
+        } else {
+            radio_group.check(radio_group.getChildAt(0).getId());
+        }
+        if (history_device1_state){
+            Device1ViewDetail.setVisibility(View.VISIBLE);
+            device1_switch.setChecked(true);
+            device1_degree.setText(String.valueOf(history_device1_temp));
+            device1_mode.setText(history_device1_mode);
+            handler.removeCallbacks(updateTimer);
+            handler.postDelayed(updateTimer, 1000);
+        } else {
+            Device1ViewDetail.setVisibility(View.GONE);
+            device1_switch.setChecked(false);
+            device1_degree.setText("--");
+            device1_mode.setText("[ -- ]");
+        }
+        if (history_device1_temp < 15) {
+            discreteSeekBar1.setTrackColor(0xFF55DEFF);
+        } else if (history_device1_temp < 22){
+            discreteSeekBar1.setTrackColor(0xFF54FE94);
+        } else if (history_device1_temp < 26){
+            discreteSeekBar1.setTrackColor(0xFF9EFE53);
+        } else if (history_device1_temp < 28){
+            discreteSeekBar1.setTrackColor(0xFFFDD252);
+        } else {
+            discreteSeekBar1.setTrackColor(0xFFFD525D);
+        }
+        discreteSeekBar1.setProgress(history_device1_temp);
+        temp_text.setText(String.valueOf(history_device1_temp));
+        quiet_button.setChecked(history_device1_quiet);
+        swing_button.setChecked(history_device1_swing);
+
+        //set Event Listeners for all components
         Device1ViewClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -309,9 +409,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                 }
             }
         });
-
-        discreteSeekBar1 = (DiscreteSeekBar) findViewById(R.id.discrete1);
-        discreteSeekBar1.setTrackColor(0xFF9EFE53);
         discreteSeekBar1.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
@@ -336,11 +433,10 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             @Override
             public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 device1_degree.setText(String.valueOf(seekBar.getProgress()));
+                history_device1_temp = seekBar.getProgress();
                 SingleToast.show(MainActivity.this, "Temperature set to "+ String.valueOf(seekBar.getProgress()) + " °C", Toast.LENGTH_SHORT);
             }
         });
-
-        radio_group = (RadioGroup) findViewById(R.id.radio_group);
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -348,75 +444,78 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                 int index = radioGroup.indexOfChild(radioButton);
                 if (index == 0){
                     device1_mode.setText("[ Auto ]");
+                    history_device1_mode = "[ Auto ]";
                     SingleToast.show(MainActivity.this, "Changed to Auto Mode.", Toast.LENGTH_SHORT);
                 } else if (index == 1){
                     device1_mode.setText("[ Cool ]");
+                    history_device1_mode = "[ Cool ]";
                     SingleToast.show(MainActivity.this, "Changed to Cool Mode.", Toast.LENGTH_SHORT);
                 } else if (index == 2){
                     device1_mode.setText("[ Dry ]");
+                    history_device1_mode = "[ Dry ]";
                     SingleToast.show(MainActivity.this, "Changed to Dry Mode.", Toast.LENGTH_SHORT);
                 } else if (index == 3){
                     device1_mode.setText("[ Fan ]");
+                    history_device1_mode = "[ Fan ]";
                     SingleToast.show(MainActivity.this, "Changed to Fan Mode.", Toast.LENGTH_SHORT);
                 } else {
                     device1_mode.setText("[ Heat ]");
+                    history_device1_mode = "[ Heat ]";
                     SingleToast.show(MainActivity.this, "Changed to Heat Mode.", Toast.LENGTH_SHORT);
                 }
             }
         });
-
-        swing_button = (ToggleButton) findViewById(R.id.swing_button);
         swing_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
+                    history_device1_swing = true;
                     SingleToast.show(MainActivity.this, "Swing is ON.", Toast.LENGTH_SHORT);
                 }
                 else
                 {
+                    history_device1_swing = false;
                     SingleToast.show(MainActivity.this, "Swing is OFF.", Toast.LENGTH_SHORT);
                 }
             }
         });
-        quiet_button = (ToggleButton) findViewById(R.id.quiet_button);
         quiet_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
+                    history_device1_quiet = true;
                     SingleToast.show(MainActivity.this, "Changed to Quiet operation.", Toast.LENGTH_SHORT);
                 }
                 else
                 {
+                    history_device1_quiet = false;
                     SingleToast.show(MainActivity.this, "Changed to Normal operation.", Toast.LENGTH_SHORT);
                 }
             }
         });
-
-        device1_mode = (TextView) findViewById(R.id.device1_mode);
-        temp_text = (TextView) findViewById(R.id.temp_text);
-        device1_degree = (TextView) findViewById(R.id.device1_subTitle);
-        device1_switch = (Switch) findViewById(R.id.device1_switch);
-        device1_switch.setChecked(false);
         device1_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
+                    handler.removeCallbacks(updateTimer);
+                    handler.postDelayed(updateTimer, 1000);
+                    history_device1_state = true;
                     Device1ViewDetail.setVisibility(View.VISIBLE);
+                    device1_degree.setText(String.valueOf(history_device1_temp));
+                    device1_mode.setText(history_device1_mode);
                     SingleToast.show(MainActivity.this, "Bedroom Air Conditioner turned ON.", Toast.LENGTH_SHORT);
-                    device1_degree.setText("25");
-                    device1_mode.setText("[ Auto ]");
                 }else{
+                    handler.removeCallbacks(updateTimer);
+                    history_device1_state = false;
                     Device1ViewDetail.setVisibility(View.GONE);
-                    SingleToast.show(MainActivity.this, "Bedroom Air Conditioner turned OFF.", Toast.LENGTH_SHORT);
                     device1_degree.setText("--");
                     device1_mode.setText("[ -- ]");
+                    SingleToast.show(MainActivity.this, "Bedroom Air Conditioner turned OFF.", Toast.LENGTH_SHORT);
                 }
             }
         });
-
-        addBtn = (FloatingActionButton) findViewById(R.id.add_button);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -424,7 +523,7 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             }
         });
 
-    refreshBtn = (FloatingActionButton) findViewById(R.id.fab);
+        refreshBtn = (FloatingActionButton) findViewById(R.id.fab);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -440,6 +539,67 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                 }
             }
         });
+
+        ReportViewClick = (RelativeLayout) findViewById(R.id.report_view_click);
+        ReportViewDetail = (LinearLayout) findViewById(R.id.report_detail_view);
+        ReportViewClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ReportViewDetail.getVisibility() == View.GONE){
+                    ReportViewDetail.setVisibility(View.VISIBLE);
+                } else {
+                    ReportViewDetail.setVisibility(View.GONE);
+                }
+            }
+        });
+        device1_usage_hr_text = (TextView) findViewById(R.id.device1_usage_hr_text);
+        device1_usage_min_text = (TextView) findViewById(R.id.device1_usage_min_text);
+        report_usage_hr_text = (TextView) findViewById(R.id.report_usage_hr_text);
+        report_usage_min_text = (TextView) findViewById(R.id.report_usage_min_text);
+        report_power_text = (TextView) findViewById(R.id.report_power_text);
+        device1_power_text = (TextView) findViewById(R.id.device1_power_text);
+        PowerChart = (ColumnChartView) findViewById(R.id.report_chart);
+        PowerChart.setOnValueTouchListener(new ValueTouchListener());
+        power_data_title = (TextView) findViewById(R.id.power_data_title);
+        power_data_txt = (TextView) findViewById(R.id.power_data_txt);
+
+        //restore History value
+        report_usage_hr_text.setText(String.valueOf(history_usage_hr));
+        device1_usage_hr_text.setText(String.valueOf(history_usage_hr));
+        report_usage_min_text.setText(String.format("%02d",history_usage_min%60));
+        device1_usage_min_text.setText(String.format("%02d",history_usage_min%60));
+        report_power_text.setText(String.format("%.2f", history_power));
+        device1_power_text.setText(String.format("%.2f", history_power));
+
+        //generate random chart value for simulation
+        List<Column> columns = new ArrayList<Column>();
+        List<SubcolumnValue> values;
+        for (int i = 0; i < 11; ++i) {
+            values = new ArrayList<SubcolumnValue>();
+            for (int j = 0; j < 1; ++j) {
+                values.add(new SubcolumnValue((float) Math.random() * 50f + 15, Color.parseColor("#FF4081")));
+            }
+            Column column = new Column(values);
+            column.setHasLabels(false);
+            column.setHasLabelsOnlyForSelected(false);
+            columns.add(column);
+        }
+        values = new ArrayList<SubcolumnValue>();
+        values.add(new SubcolumnValue(history_power, Color.parseColor("#FFAE19")));
+        Column column = new Column(values);
+        column.setHasLabels(false);
+        column.setHasLabelsOnlyForSelected(false);
+        columns.add(column);
+
+        ColumnChartData data = new ColumnChartData(columns);
+        PowerChart.setColumnChartData(data);
+        PowerChart.setZoomEnabled(false);
+        Calendar c2 = Calendar.getInstance();
+        Integer yyyy2 = c2.get(Calendar.YEAR);
+        Integer mm2 = c2.get(Calendar.MONTH);
+        String date = String.format("%02d", mm2+1) + "/" + String.format("%04d", yyyy2);
+        power_data_title.setText(date);
+        power_data_txt.setText(String.format("%.2f", history_power) + " kWh");
 
         aqhi_text = (TextView) findViewById(R.id.aqhi_text);
         er_text = (TextView) findViewById(R.id.er_text);
@@ -805,6 +965,14 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             editor.putBoolean("illness2", ill2_edit.isChecked());
         }
         editor.putString("success_date", history_success_date);
+        editor.putBoolean("device1_state", history_device1_state);
+        editor.putString("device1_mode", history_device1_mode);
+        editor.putBoolean("device1_swing", history_device1_swing);
+        editor.putBoolean("device1_quiet", history_device1_quiet);
+        editor.putInt("device1_temp", history_device1_temp);
+        editor.putInt("usage_hr", history_usage_hr);
+        editor.putInt("usage_min", history_usage_min);
+        editor.putFloat("power", history_power);
         editor.commit();
         if (quickTask != null && quickTask.getStatus() != AsyncTask.Status.FINISHED)
             quickTask.cancel(true);
@@ -918,8 +1086,13 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
                             aqhi_icon.setImageResource(R.drawable.aqhi_low);
                         } else if (AQHI_value < 7) {
                             final_result += "  ( Moderate )";
-                            exercise_text.setVisibility(View.VISIBLE);
-                            advice_text.setVisibility(View.GONE);
+                            if (illness || user_age < 6 || user_age > 64) {
+                                exercise_text.setVisibility(View.GONE);
+                                advice_text.setVisibility(View.VISIBLE);
+                            } else {
+                                exercise_text.setVisibility(View.VISIBLE);
+                                advice_text.setVisibility(View.GONE);
+                            }
                             aqhi_icon.setImageResource(R.drawable.aqhi_moderate);
                         } else if (AQHI_value < 8) {
                             final_result += "  ( High )";
@@ -1215,16 +1388,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             Line line = new Line(values).setColor(0xFFFF4081).setCubic(false).setPointRadius(5).setStrokeWidth(3);
             List<Line> lines = new ArrayList<Line>();
             lines.add(line);
-            //add avg Line
-            avg_values.add(new PointValue(0, 0));
-            avg_values.add(new PointValue(1, 0));
-            avg_values.add(new PointValue(2, 0));
-            avg_values.add(new PointValue(3, 0));
-            avg_values.add(new PointValue(4, 0));
-            avg_values.add(new PointValue(5, 0));
-            avg_values.add(new PointValue(6, 0));
-            Line avg_line = new Line(avg_values).setColor(0xFFFFAE19).setCubic(false).setPointRadius(0).setStrokeWidth(1);
-            lines.add(avg_line);
 
             LineChartData data = new LineChartData();
             data.setLines(lines);
@@ -1357,16 +1520,6 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
             //In most cased you can call data model methods in builder-pattern-like manner.
             Line line = new Line(values).setColor(0xFFFF4081).setCubic(false).setPointRadius(5).setStrokeWidth(3);
             lines.add(line);
-            //add avg Line
-            avg_values.add(new PointValue(0, 0));
-            avg_values.add(new PointValue(1, 0));
-            avg_values.add(new PointValue(2, 0));
-            avg_values.add(new PointValue(3, 0));
-            avg_values.add(new PointValue(4, 0));
-            avg_values.add(new PointValue(5, 0));
-            avg_values.add(new PointValue(6, 0));
-            Line avg_line = new Line(avg_values).setColor(0xFFFFAE19).setCubic(false).setPointRadius(0).setStrokeWidth(1);
-            lines.add(avg_line);
 
             LineChartData data = new LineChartData();
             data.setLines(lines);
@@ -1412,23 +1565,9 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
     public void onValueDeselected() { }
 
     private void prepareDataAnimation(LineChartData data) {
-        for (Line line : data.getLines()) {
-            if (line.getColor() == 0xFFFFAE19) {
-                for (PointValue value : line.getValues()) {
-                    value.setTarget(value.getX(), (float) avg_steps);
-                }
-            }
-        }
     }
 
     private void prepareDataAnimation2(LineChartData data) {
-        for (Line line : data.getLines()) {
-            if (line.getColor() == 0xFFFFAE19) {
-                for (PointValue value : line.getValues()) {
-                    value.setTarget(value.getX(), (float) avg_heartrate);
-                }
-            }
-        }
     }
 
     private void showRegistrationDialog(Context context) {
@@ -1511,5 +1650,45 @@ public class MainActivity extends Activity implements LocationListener, GoogleAp
         dialog.show();
     }
 
+    private Runnable updateTimer = new Runnable() {
+        public void run() {
+            history_usage_min++;
+            history_usage_hr = (history_usage_min)/60;
+            history_power = 0.02f * history_usage_min;
+            report_usage_hr_text.setText(String.valueOf(history_usage_hr));
+            device1_usage_hr_text.setText(String.valueOf(history_usage_hr));
+            device1_usage_min_text.setText(String.format("%02d",history_usage_min%60));
+            report_usage_min_text.setText(String.format("%02d",history_usage_min%60));
+            report_power_text.setText(String.format("%.2f", history_power));
+            device1_power_text.setText(String.format("%.2f", history_power));
+
+            List<SubcolumnValue> values;
+            values = new ArrayList<SubcolumnValue>();
+            values.add(new SubcolumnValue(history_power, Color.parseColor("#FFAE19")));
+            PowerChart.getColumnChartData().getColumns().get(11).setValues(values);
+
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    private class ValueTouchListener implements ColumnChartOnValueSelectListener {
+
+        @Override
+        public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.MONTH, columnIndex-11);
+            Integer yyyy = c.get(Calendar.YEAR);
+            Integer mm = c.get(Calendar.MONTH);
+            String date = String.format("%02d", mm+1) + "/" + String.format("%04d", yyyy);
+            power_data_title.setText(date);
+            power_data_txt.setText(String.format("%.2f", value.getValue()) + " kWh");
+        }
+
+        @Override
+        public void onValueDeselected() {
+            // TODO Auto-generated method stub
+
+        }
+    }
 
 }
